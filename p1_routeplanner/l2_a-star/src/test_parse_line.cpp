@@ -1,4 +1,4 @@
-void printVector(vector<int> v) {
+void PrintVector(vector<int> v) {
   cout << "{ ";
   for (auto item : v) {
     cout << item << " ";
@@ -6,18 +6,18 @@ void printVector(vector<int> v) {
   cout << "}" << "\n";
 }
 
-void testParseLine() {
+void TestParseLine() {
   cout << "----------------------------------------------------------" << "\n";
   cout << "TestParseLine: ";
-  string line = "0,1,0,0,0,0,";
+  std::string line = "0,1,0,0,0,0,";
   vector<int> solution_vect{0,1,0,0,0,0};
   vector<int> test_vect;
-  test_vect = parseLine(line);
+  test_vect = ParseLine(line);
   if (test_vect != solution_vect) {
     cout << "failed" << "\n";
     cout << "\n" << "Test input string: " << line << "\n";
     cout << "Your parsed line: ";
-    printVector(test_vect);
+    PrintVector(test_vect);
     cout << "\n";
   } else {
     cout << "passed" << "\n";
