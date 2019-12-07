@@ -1,6 +1,7 @@
 // Include iostream for output
 #include <cassert>
 #include <iostream>
+#include <vector>
 
 /* to build and run:
  * $ cd obj/
@@ -42,7 +43,12 @@ class Date2 {
     int Year() { return year_; }
     void Year(int y) { year_ = y; }
 
+    const std::string String();
+
   private:
+    const bool LeapYear( int year );
+    const int DaysInMonth( int month, int year );
+
     int day_{1};
     int month_{1};
     int year_{2000};
@@ -75,11 +81,50 @@ Date2::Date2( int d, int m, int y ) : year_(y) {
 }
 
 void Date2::Day( int d ) {
-  if (d >= 1 && d <= 31) day_ = d;
+  if ( d >= 1 && d <= DaysInMonth(Month(), Year()) ) {
+    day_ = d;
+  }
 }
 
 void Date2::Month( int m ) {
   if (m >= 1 && m <= 12) month_ = m;
+}
+
+const bool Date2::LeapYear( int year ) {
+  if( year % 4 != 0 ) {
+    return false;
+  }
+  else if( year % 100 != 0 ) {
+    return true;
+  }
+  else if( year % 400 != 0) {
+    return false;
+  }
+  else {
+    return true;
+  }
+}
+
+const int Date2::DaysInMonth( int month, int year ) {
+  if( month == 2 ) {
+    return LeapYear( year ) ? 29 : 28;  // conditional assignment
+  }
+  else if( month == 4 || month == 6 || month == 9 || month == 11) {
+    return 30;
+  }
+  else {
+    return 31;
+  }
+}
+
+const std::string Date2::String() {
+  // should problably be declared as private member variable
+  std::vector<std::string> months = {
+    "January",   "February", "March",    "April",
+    "May",       "June",     "July",     "August",
+    "September", "October",  "November", "December"};;
+
+    return months[month_ - 1] + " " + std::to_string(day_) + ", " + std::to_string(year_); 
 }
 
 /* INITIALIZER LISTS:
@@ -118,15 +163,16 @@ Birthday::Birthday( int d, int m, int y ) : day_(d), month_(m), year_(y) { }
 // Define a main function to instantiate and test 
 int main() {
   // create class of type Date2
-  Date2 date2(5,1,2000);
+  Date2 date2(29,2,2016);
 
   int d = 10;
-  date2.Day( d );
+  // date2.Day( d );
   
   // TEST
-  assert(date2.Day() == 10);
-  assert(date2.Month() == 1);
-  assert(date2.Year() == 2000);
+  assert(date2.Day() == 29);
+  assert(date2.Month() == 2);
+  assert(date2.Year() == 2016);
+  assert(date2.String() == "February 29, 2016");
 
   // Print the data in the structure
   std::cout << date2.Day() << "/" << date2.Month() << "/" << date2.Year() << "\n";
