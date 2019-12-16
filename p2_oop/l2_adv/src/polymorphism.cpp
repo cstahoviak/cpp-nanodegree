@@ -67,8 +67,34 @@ class Point {
 
 /* VIRTUAL FUNCTIONS:
 * "Virtual functions allow us to define an abstract class that can function as an interface
-* from which other classes can be derived"
+* from which other classes can be derived." These functions are declared (and possibly
+* defined) in a base class, and can be overridden by derived classes. This approach declares
+* an interface at the base level, but delegates the implementation of the interface to the
+* derived classes.
 */
+
+// NOTE: A pure virtual function has the side effect of making its class abstract. This means
+// that the class cannot be instantiated. Instead, only classes that derive from the abstract
+// class and override the pure virtual function can be instantiated. 
+
+class Shape { // define "abstract base class" Shape()
+  public:
+    // declare Area() and Perimiter() as "pure virtual" (= 0). A pure virtual function is a
+    // virtual function that the base class declares but does not define. A derived class
+    // must define this function, or else the derived class will be abstract.
+    virtual const double Area() = 0;
+    virtual const double Perimiter() = 0;
+};
+
+// TODO: Define Rectangle to inherit publicly from Shape
+  // TODO: Declare public constructor
+  // TODO: Override virtual base class functions Area() and Perimeter()
+  // TODO: Declare private attributes width and height
+
+// TODO: Define Circle to inherit from Shape
+  // TODO: Declare public constructor
+  // TODO: Override virtual base class functions Area() and Perimeter()
+  // TODO: Declare private member variable radius
 
 int main(void) {
 
@@ -86,5 +112,16 @@ int main(void) {
   assert(p3.y == p1.y + p2.y);
 
   // VIRTUAL FUNCTIONS
+  double epsilon = 0.1; // useful for floating point equality
+
+  // Test circle
+  Circle circle(12.31);
+  assert(abs(circle.Perimeter() - 77.35) < epsilon);
+  assert(abs(circle.Area() - 476.06) < epsilon);
+
+  // Test rectangle
+  Rectangle rectangle(10, 6);
+  assert(rectangle.Perimeter() == 32);
+  assert(rectangle.Area() == 60)
   
 }
