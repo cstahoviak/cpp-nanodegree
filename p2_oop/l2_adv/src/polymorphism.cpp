@@ -2,6 +2,7 @@
 #include <vector>
 #include <cassert>
 #include <ctime>
+#include <cmath>
 
 /* FUNCTION OVERLOADING:
 * Overloading requires that we leave the function name the same, but we modify the function
@@ -81,20 +82,102 @@ class Shape { // define "abstract base class" Shape()
   public:
     // declare Area() and Perimiter() as "pure virtual" (= 0). A pure virtual function is a
     // virtual function that the base class declares but does not define. A derived class
-    // must define this function, or else the derived class will be abstract.
-    virtual const double Area() = 0;
-    virtual const double Perimiter() = 0;
+    // must define this function, or else the derived class will also be abstract.
+
+    // NOTE: double Area() const
+    //  Use const after name of function to indicate that the function should not modify any
+    //  variables of the associated class.
+    // NOTE: const double& Area()
+    //  this will return a const reference to a variable of type double
+
+    virtual double Area() const = 0;
+    virtual double Perimeter() const = 0;
 };
 
 // TODO: Define Rectangle to inherit publicly from Shape
   // TODO: Declare public constructor
   // TODO: Override virtual base class functions Area() and Perimeter()
   // TODO: Declare private attributes width and height
+class Rectangle : public Shape {
+  public:
+    Rectangle( double w, double h) : width_(w), height_(h) {}  // constructor
+    /* NOTE: On const functions:
+    * The idea of const functions is not to allow them to modify the object on which they are
+    * called. It is recommended the practice to make as many functions const as possible so
+    * that accidental changes to objects are avoided.
+    */
+    double Area() const override { return width_ * height_; }
+    double Perimeter() const override { return 2.0 * (width_ + height_); }
+
+    private:
+      double width_{0.0};
+      double height_{0.0};
+};
 
 // TODO: Define Circle to inherit from Shape
   // TODO: Declare public constructor
   // TODO: Override virtual base class functions Area() and Perimeter()
   // TODO: Declare private member variable radius
+class Circle : public Shape {
+  public:
+    Circle( double r ) : radius_(r) {}  // constructor
+
+    double Area() const override { return M_PI * pow(radius_,2); }
+    double Perimeter() const override { return 2.0 * M_PI * radius_; }
+
+    private:
+      double radius_{0.0};
+};
+
+/* FUNCTION OVERRDING:
+* "Let's the compiler (and people reading your code) know that this function will 'override'
+* a function declared as 'virtual' in the base class." Use the  override keyword as a 'best
+* practice' - the compiler will verify that a function specified as 'override' does indeed
+* override some other virtual function, or otherwise the compiler will generate an error.
+*/
+
+// TODO: Declare abstract class VehicleModel
+  // TODO: Declare virtual function Move()
+class VehcicleModel {
+  public:
+    // define "pure virtual" function Move()
+    virtual void Move( double v, double theta ) = 0;
+};
+
+// TODO: Derive class ParticleModel from VehicleModel
+  // TODO: Override the Move() function
+  // TODO: Define x, y, and theta
+class ParticleModel : public VehcicleModel {
+  public:
+    void Move( double v, double phi ) override {
+      theta += phi;
+      x += v * cos(theta);
+      y += v * sin(theta);
+    }
+
+  double x{0.0};
+  double y{0.0};
+  double theta{0.0};
+};
+
+// TODO: Derive class BicycleModel from ParticleModel
+  // TODO: Override the Move() function
+  // TODO: Define L
+class BicycleModel : public ParticleModel {
+  public:
+    void Move( double v, double phi ) override {
+      theta += v / L * tan(phi);
+      x += v * cos(theta);
+      y += v* sin(theta);
+    }
+
+    double L{1.0};
+};
+
+/* MULTIPLE INHERITANCE:
+* 
+*
+*/
 
 int main(void) {
 
@@ -122,6 +205,14 @@ int main(void) {
   // Test rectangle
   Rectangle rectangle(10, 6);
   assert(rectangle.Perimeter() == 32);
-  assert(rectangle.Area() == 60)
-  
+  assert(rectangle.Area() == 60);
+
+  // Test function overriding
+  ParticleModel particle;
+  BicycleModel bicycle;
+  particle.Move(10, M_PI / 9);
+  bicycle.Move(10, M_PI / 9);
+  assert(particle.x != bicycle.x);
+  assert(particle.y != bicycle.y);
+  assert(particle.theta != bicycle.theta);
 }
