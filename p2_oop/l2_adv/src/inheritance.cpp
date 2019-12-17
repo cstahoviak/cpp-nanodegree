@@ -5,7 +5,8 @@
 #include <cassert>
 #include <cmath>
 
-/* NOTE: Inheritance modifiers (public, protected, private) refer to how an abject of the
+/* INHERITANCE: 
+* Inheritance modifiers (public, protected, private) refer to how an object of the
 * derived class exposes the members (variables and methods) of the base class to the user.
 * In practice, 'protected' is not used all that often.
 
@@ -68,10 +69,10 @@ class Cat : public Animal {
 
 /* COMPOSITION:
 * Composition is a closely related alternative to inheritance. Composition involves
-& constructing ("composing") classes from other classes, instead of inheriting traits from a
+* constructing ("composing") classes from other classes, instead of inheriting traits from a
 * parent class.
 
-A common way to distinguish "composition" from "inheritance" is to think about what an object
+* A common way to distinguish "composition" from "inheritance" is to think about what an object
 * can do, rather than what it is. This is often expressed as "has a" versus "is a".
 */
 
@@ -98,12 +99,12 @@ double Circle::Area()
 }
 
 /* FRIEND ACCESS MODIFIER:
-* NOTE: The 'friend' keyword grants access to the private members of a class
+* NOTE: The 'friend' keyword grants access to the private members of a class.
 
 * NOTE: The main difference between classical inheritance and friend inheritance is that a
-friend class can access private members of the base class, which isn't the case for classical
-inheritance. In classical inheritance, a derived class can only access public and protected
-members of the base class.
+* friend class can access private members of the base class, which isn't the case for classical
+* inheritance. In classical inheritance, a derived class can only access public and protected
+* members of the base class.
 */
 
 // NOTE: Square must be declared before Rectangle in order to pass an object of type Square
