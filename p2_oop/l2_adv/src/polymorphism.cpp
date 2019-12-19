@@ -37,7 +37,7 @@ void hello(Human human) {
 }
 
 /* OPERATOR OVERLOADING:
-* " Operator overlaoding allows us to assing our own logic to operators. For example, you
+* " Operator overlaoding allows us to assign our own logic to operators. For example, you
 * might want to perform vector addition on a pair of points to add their x and y components.
 * The compiler won't recognize this type of operation on its own, because this data is user
 * defined. However, you can overload the + operator so it performs the action that you want
