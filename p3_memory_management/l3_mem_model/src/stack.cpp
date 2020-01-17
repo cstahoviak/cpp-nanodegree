@@ -30,6 +30,8 @@ void AddTwo(int val) {
 *   created on the stack by calling AddThree(). But by passing an
 *   address, we have a "backchannel" to modify the variable val that
 *   is in the scope of main().
+
+*   Q: What if I change * to &? -> See AddFour()!
 */
 void AddThree(int *val) {
   // pointer dereference operator (*) allows us modify variable val
