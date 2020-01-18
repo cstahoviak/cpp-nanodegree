@@ -118,6 +118,16 @@ class MyMovableClass {
           return *this;
       
       delete[] _data;   // why is the call to delete[] necessary?
+
+      /* Explanation (from Sasha):
+      * " Since both (move AND copy assignment operators) are
+      * assignment operators and not constructors, it is (rightly)
+      * assumed that _data points to some allocated object. Since we
+      * are about to assign _data to point to something else, we need
+      * to delete (release memory) whatever _data is currently pointing
+      * to, or else we are causing a memory leak."
+      */
+
       _data = new int[source._size];
       *_data = *source._data;
       _size = source._size;
