@@ -168,12 +168,14 @@ int main()
   std::cout << "myClass2._text = " << myClass2->getText() << "\n";
 
   // use the .get() function to retrieve a raw pointer to the object
+  std::cout << "Objects have stack addresses " << &myClass1 << " and " << &myClass2 << std::endl;
   std::cout << "Objects have heap addresses " << myClass1.get() << " and " << myClass2.get() << std::endl;
 
   // use std::move to have myClass3 to "point to" heap address of
   // myClass object previously pointed to/managed by myClass1 pointer
   myClass1->setText("String 1");
   auto myClass3 = std::move(myClass1);
+  std::cout << "Objects have stack addresses " << &myClass3 << " and " << &myClass2 << std::endl;
   std::cout << "Objects have heap addresses " << myClass3.get() << " and " << myClass2.get() << std::endl;
 
   // line below will cause a segfault because the unique pointer
