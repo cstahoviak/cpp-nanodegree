@@ -45,7 +45,11 @@ void RawPointer() {
   pointers always need to be declared on the stack, otherwise the
   scoping mechanism would not work.
 
-  NOTE: a key feature of a unique pointer, which makes it so well-
+  NOTE: A unique_ptr is an EXLUSIVE OWNER of the managed resource;
+  therefore, it cannot be copied, only moved. In contrast, a
+  shared_ptr shares the managed resource with others.
+
+  NOTE: A key feature of a unique pointer, which makes it so well-
   suited as a return type for many functions, is the possibility to
   convert it to a "shared pointer".
 */
@@ -142,9 +146,9 @@ int main()
      that they point to.
   
     1. The unique pointers MyClass1 and myClass2 exist on the STACK
-    2. The instances of Myclass object which are managed by the
+    2. The instances of Myclass objects which are managed by the
     myClass1 and myClass2 pointers, respectively, exist on the HEAP. We
-    can use the .ge() function to return the momory address of the
+    can use the .get() function to return the momory address of the
     object on the HEAP.
   */
 

@@ -36,11 +36,12 @@ object at a time has access to and thus owns the resource.
   references are themselves lvalues.** Even though the object it
   refers to (the number 42) may be disposable in the context it has
   been created (the main function), it is not disposable in the context
-  of the reference . So within the scope of myFunction, val is an
+  of the reference. So within the scope of myFunction, val is an
   lvalue as it gives access to the memory location where the number
   42 is stored.
 */
 void myFunction(int &&val) {
+  // terminal output: val = 42"
   std::cout << "val = " << val << std::endl;
 }
 
@@ -48,14 +49,14 @@ void myFunction(int &&val) {
 * 1. DESTRUCTOR: responsible for freeing the resource once the object
 it belongs to goes out of scope.
 
-* 2. ASSIGNMENT OPERATOR: the default assignment operation performs a
+* 2. COPY CONSTRUCTOR: as with the assignment operator, the default
+copy constructor performs a "shallow copy" of the data members. If
+something else is needed, the programmer has to implement it accordingly.
+
+* 3. COPY ASSIGNMENT OPERATOR: the default assignment operation performs a
 member-wise "shallow copy", which does not copy the content behind the
 resource handle. If a "deep copy" is needed, it has be implemented by
 the programmer.
-
-* 3. COPY CONSTRUCTOR: as with the assignment operator, the default
-copy constructor performs a "shallow copy" of the data members. If
-something else is needed, the programmer has to implement it accordingly.
 
 * 4. MOVE CONSTRUCTOR: because copying objects can be an expensive
 operation which involves creating, copying and destroying temporary
@@ -88,7 +89,7 @@ class MyMovableClass {
     }
 
     /* 2: COPY CONSTRUCTOR
-    * the copy constructor takes an lvalue reference to the source
+    * The copy constructor takes an lvalue reference to the source
     * instance, allocates a block of memory of the same size as the
     * source and then copies the data into its members (deep copy).
     */
@@ -117,18 +118,20 @@ class MyMovableClass {
       if (this == &source)
           return *this;
       
-      delete[] _data;   // why is the call to delete[] necessary?
+      // deallocate memory pointed to by _data (which currently exists)
+      delete[] _data;
+      // allocate new block of memory (of potentially different size)
+      _data = new int[source._size];
 
-      /* Explanation (from Sasha):
-      * " Since both (move AND copy assignment operators) are
+      /* Explanation of above lines (from Sasha):
+      * "Since both (move AND copy assignment operators) are
       * assignment operators and not constructors, it is (rightly)
-      * assumed that _data points to some allocated object. Since we
-      * are about to assign _data to point to something else, we need
-      * to delete (release memory) whatever _data is currently pointing
-      * to, or else we are causing a memory leak."
+      * assumed that _data points to some currently existing (previously
+      * allocated) object. Since weare about to assign _data to point to
+      * something else, we need to delete (release memory) whatever _data
+      * is currently pointing to, or else we are causing a memory leak."
       */
 
-      _data = new int[source._size];
       *_data = *source._data;
       _size = source._size;
       return *this;
@@ -152,6 +155,8 @@ class MyMovableClass {
       std::cout << "MOVING (c’tor) instance " << &source << " to instance " << this << std::endl;
       _data = source._data;
       _size = source._size;
+
+      // we are able to modify the object managed by source
       source._data = nullptr;
       source._size = 0;
     }
