@@ -4,7 +4,6 @@
 
 using namespace std;
 
-
 // NOTE: need to compile with pthreads:
 // g++ -pthread ../src/threads.cpp -o threads.o
 
