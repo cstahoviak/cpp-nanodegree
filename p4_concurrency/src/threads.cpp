@@ -55,8 +55,16 @@ int main() {
   cout << "This machine supports concurrency with " <<
     nCores << " cores available" << endl;
 
-  /*NOTE: On Thread Declaration (below)
+  /*NOTE: "C++'s most vexing parse" - Scott Meyers, "Effective STL"
+  *
+  * The "most vexing parse" comes from a rule in C++ that says that anything that
+  * could be considered as a function declaration, the compiler should parse it as
+  * a function declaration - even if it could be interpreted as something else.
+  * 
+  * For the thread declaration (below)
   * std::thread t(Vehicle());
+  * 
+  * we may interpret this in one of two ways:
   * 
   * 1. a variable definition for variable t of class std::thread,
   * initialized with an anonymous instance of class Vehicle, or
@@ -65,7 +73,7 @@ int main() {
   * type std::thread and has a single (unnamed) parameter that is a pointer
   * to function returning an object of type Vehicle.
   * 
-  * Most programmers would presumable expect the first case to be true, but
+  * Most programmers would presumably expect the first case to be true, but
   * the C++ standard requires it to be interpreted as the second - hence the
   * compiler error.
   * 
@@ -81,7 +89,7 @@ int main() {
   // std::thread t(Vehicle());   // C++'s most vexing parse
 
   // alternative to line above (will compile)
-  std::thread t = std::thread( Vehicle(1) ); // Use copy initialization
+  std::thread t = std::thread( Vehicle() ); // Use copy initialization
 
   // do something in main()
   cout << "Finshed work in main()" << endl;
@@ -91,8 +99,34 @@ int main() {
 
   std::cout << "\n";
 
+  // STARTING A THREAD VIA A LAMBDA FUNCTION:
+  int id = 0; // Define an integer variable
+
+  // starting a first thread (by reference)
+  auto f0 = [&id]() {
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      std::cout << "a) ID in Thread (call-by-reference) = " << id << std::endl;
+  };
+  std::thread thread1(f0);
+
+  // starting a second thread (by value)
+  std::thread thread2([id]() mutable {
+      std::this_thread::sleep_for(std::chrono::milliseconds(50));
+      std::cout << "b) ID in Thread (call-by-value) = " << id << std::endl;
+  });
+
+  // increment and print id in main
+  ++id;
+  std::cout << "c) ID in Main (call-by-value) = " << id << std::endl;
+
+  // wait for threads before returning
+  thread1.join();
+  thread2.join();
+
+  return 0;
+
   /* VARIADIC TEMPLATES AND MEMBER FUNCTIONS:
-  * he thread constructor may be called with a function and all its
+  * The thread constructor may be called with a function and all its
   * arguments. That is possible because the thread constructor is a
   * "variadic template" that takes multiple arguments.
   *
