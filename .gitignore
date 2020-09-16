@@ -1,4 +1,4 @@
 *.o
 *.out
 *.vscode
-p4_concurrency/build/
+project4_concurrency/build/
