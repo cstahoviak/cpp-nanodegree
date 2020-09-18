@@ -128,7 +128,7 @@ Using threads follows a basic concept called "fork-join-parallelism". The basic 
 
 The following diagram illustrates the basic idea of forking:
 
-![](images/fork_join.png)
+![](../images/fork_join.jpg)
 
 In the main thread, the program flow is forked into three parallel branches. In both worker branches, some work is performed - which is why threads are often referred to as _worker threads_. Once the work is completed, the flow of execution is united again in the main function using the `join()` command. In this example, `join` acts as a _barrier_ where all threads are united. The execution of main is in fact halted, until both worker threads have successfully completed their respective work.
 

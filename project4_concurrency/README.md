@@ -7,7 +7,7 @@ Topics covered:
   - Detailed introduction to the Concurrent Traffic Simulation project
 - __Lesson 2__: Sharing data between threads
   - C++ __Promises__ and __Futures__
-  - Difference between threads and tasks
+  - Difference between __Threads__ and __Tasks__ (`std::async`)
   - Strategies to avoid __data races__ - a major source of errors in concurrent programming
 - __Lesson 3__: Safely share data between threads (without creating data races)
   - C++ __mutexes__ and __locks__ - among the most important concepts of the C++ Nanaodegree course
