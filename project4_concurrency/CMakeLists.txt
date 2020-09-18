@@ -20,6 +20,8 @@ link_libraries(Threads::Threads)
 
 # Add project executables
 add_executable(threads src/threads.cpp)
+add_executable(lambdas src/lambdas.cpp)
+add_executable(promises_futures src/promises_futures.cpp)
 
 # Apply link libraries to specific targets
 # target_link_libraries(threads Threads::Threads)

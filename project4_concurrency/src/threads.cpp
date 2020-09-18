@@ -34,6 +34,7 @@ void printName(std::string name, int waitTime)
   std::cout << "Name (from Thread) = " << name << std::endl;
 }
 
+// printName2 take a non-const reference to the string 'name'
 void printName2(std::string &name, int waitTime)
 {
   std::this_thread::sleep_for(std::chrono::milliseconds(waitTime));
@@ -84,6 +85,7 @@ int main() {
   * std::thread t2 = std::thread( Vehicle() ); // Use copy initialization
   * std::thread t3{ Vehicle() };               // Use uniform initialization with braces
   */
+  cout << "C++'s 'most-vexing' parse:" << endl;
 
   // create a thread (won't compile)
   // std::thread t(Vehicle());   // C++'s most vexing parse
@@ -97,9 +99,8 @@ int main() {
   // wait for the thread to finish
   t.join();
 
-  std::cout << "\n";
-
   // STARTING A THREAD VIA A LAMBDA FUNCTION:
+  cout << "\nExample 0: Starting a thread with a Lambda function" << endl;
   int id = 0; // Define an integer variable
 
   // starting a first thread (by reference)
@@ -122,30 +123,29 @@ int main() {
   // wait for threads before returning
   thread1.join();
   thread2.join();
-
-  return 0;
+  cout << endl;
 
   /* VARIADIC TEMPLATES AND MEMBER FUNCTIONS:
-  * The thread constructor may be called with a function and all its
-  * arguments. That is possible because the thread constructor is a
-  * "variadic template" that takes multiple arguments.
+  * The thread constructor may be called with a function and all its arguments.
+  * That is possible because the thread constructor is a "variadic template"
+  * that takes multiple arguments.
   *
-  * There is one more difference between calling a function directly and
-  * passing it to a thread: With the former, arguments may be passed by
-  * value, by reference or by using move semantics - depending on the
-  * signature of the function. When calling a function using a variadic
-  * template, the arguments are by default either moved or copied -
-  * depending on wether they are rvalues or lvalues.
+  * There is one more difference between calling a function directly and passing
+  * it to a thread: With the former, arguments may be passed by value, by
+  * reference or by using move semantics - depending on the signature of the
+  * function. When calling a function using a variadic template, the arguments
+  * are by default either moved or copied - depending on whether they are
+  * rvalues or lvalues.
   * 
   * In the following example, two threads are started, each with a different
-  * string as a parameter. With t1, the string name1 is copied by value, 
-  * which allows us to print name1 even after join has been called. The
-  * second string name2 is passed to the thread function using move
-  * semantics, which means that it is not available any more after join has
-  * been called on t2.
+  * string as a parameter. With t1, the string name1 is copied by value, which
+  * allows us to print name1 even after join has been called. The second string
+  * name2 is passed to the thread function using move semantics, which means
+  * that it is not available any more after join has been called on t2.
   */
 
   // EXAMPLE 1:
+  cout << "Example 1: Variadic Templates" << endl;
   std::string name1 = "MyThread1";
   std::string name2 = "MyThread2";
 
@@ -163,10 +163,15 @@ int main() {
   std::cout << "\n";
 
   /* EXAMPLE 2: std::ref() 
-  * When passing the string variable name to the thread function, we need
-  * to explicitly mark it as a reference, so the compiler will treat it as
-  * such. This can be done by using the std::ref() function
+  * When passing the string variable name to the thread function, we need to
+  * explicitly mark it as a reference, so the compiler will treat it as such.
+  * This can be done by using the std::ref() function.
+  * 
+  * Note that even though the code in Example 2 works, we are now sharing
+  * mutable data between threads - which will be something we discuss in later
+  * sections of this course as a primary source for concurrency bugs!
   */
+  cout << "Example 2: Variadic Templates and std::ref() " << endl;
   std::string name("MyThread");
 
   // starting thread
@@ -180,15 +185,15 @@ int main() {
   std::cout << name << "\n\n";
 
   /* EXAMPLE 3: calling object member function within a thread
-  * In the example above, the Vehicle object v1 is passed to the thread
-  * function by value, thus a copy is made which does not affect the
-  * "original“ living in the main thread. Changes to its member variable
-  * _id will thus not show when printing calling printID() later in main.
-  * The second Vehicle object v2 is instead passed by reference. Therefore,
-  * changes to its _id variable will also be visible in the main thread.
+  * In the example below, the Vehicle object v1 is passed to the thread function
+  * by value, thus a copy is made which does not affect the "original“ living in
+  * the main thread. Changes to its member variable _id will thus not show when
+  * printing calling printID() later in main. The second Vehicle object v2 is
+  * instead passed by reference. Therefore, changes to its _id variable will
+  * also be visible in the main thread.
   */
+ cout << "Example 3: calling object member function within a thread" << endl;
 
-  // create thread
   Vehicle v1, v2;
   // pass Vehicle object to thread by value
   std::thread t4 = std::thread(&Vehicle::addID, v1, 1);
@@ -205,15 +210,16 @@ int main() {
   cout << "\n";
 
   /* EXAMPLE 4: Shared Pointers & Threads
-  * In the previous example, we have to ensure that the existence of v2
-  * outlives the completion of the thread t2 - otherwise there will be an
-  * attempt to access an invalidated memory address. An alternative is to
-  * use a heap-allocated object and a reference-counted pointer such as
+  * In the previous example, we have to ensure that the existence of v2 outlives
+  * the completion of the thread t2 - otherwise there will be an attempt to
+  * access an invalidated memory address. An alternative is to use a
+  * heap-allocated object and a reference-counted pointer such as
   * std::shared_ptr<Vehicle> to ensure that the object lives as long as it
   * takes the thread to finish its work.
   */
+  cout << "Example 4: Shared Pointers" << endl;
 
-  // create thread
+  // create Vehicle object via a shared pointer
   auto v = std::make_shared<Vehicle>();
   std::thread t6 = std::thread(&Vehicle::addID, v, 1);
   std::thread t7 = std::thread(&Vehicle::setName, v, "GTR");
@@ -225,22 +231,22 @@ int main() {
   // print Vehicle id and name
   v->printID();
   v->printName();
-  cout << "\n";
 
   /* RUNNING MULTIPLE THEADS AT ONCE:
-  * A number of threads is created and added to a vector. The basic idea is
-  * to loop over the vector at the end of the main function and call join
-  * on all the thread objects inside the vector.
+  * A number of threads is created and added to a vector. The basic idea is to
+  * loop over the vector at the end of the main function and call join on all 
+  * the thread objects inside the vector.
   * 
-  * Note the use of push_back() causes a compiler error. The problem is that
-  * by pushing the thread object into the vector, we attempt to make a copy
-  * of it. However, thread objects do not have a copy constructor and thus
-  * cannot be duplicated.
+  * Note the use of push_back() causes a compiler error. The problem is that by
+  * pushing the thread object into the vector, we attempt to make a copy of it.
+  * However, thread objects do not have a copy constructor and thus cannot be
+  * duplicated.
   * 
   * To solve the problem, we can use the function emplace_back() instead of
-  * push_back(), which internally uses move semantics to move our thread
-  * object into the vector without making a copy.
+  * push_back(), which internally uses move semantics to move our thread object
+  * into the vector without making a copy.
   */
+  cout << "\nRunning Multple Threads: A First Concurrency Bug!" << endl;
 
   // create threads
   std::vector<std::thread> threads;
@@ -262,7 +268,6 @@ int main() {
   for (auto &t : threads) {
     t.join();
   }
-  cout << "\n";
 
   /* OUTPUT:
   * Hello from Worker thread #Hello from Worker thread #140410393507584140410385114880
@@ -280,14 +285,22 @@ int main() {
   * of execution.
   * 
   * 2. Threads may get preempted in the middle of execution and another
-  * thread may be selected to run (as in the first line)
+  * thread may be selected to run (as in the first line).
+  * 
+  * These two properties pose a major problem with concurrent applications: A
+  * program may run correctly for thousands of times and suddenly, due to a
+  * particular interleaving of threads, there might be a problem. From a
+  * debugging perspective, such errors are very hard to detect as they can not
+  * be reproduced easily.
   */
 
   /* FIXING THE EXAMPLE ABOVE:
   * if i is passed to the thread lambda as a reference (&i), this causes a
   * concurrency bug in the form of each thread attempting to access a 
-  * shared memory location.
+  * shared memory location. The bug is fixed py passing i by-value to each
+  * thread,
   */
+  cout << "\nRunning Multiple Threads: Fixing the Concurrency Bug" << endl;
 
   // create threads
   std::vector<std::thread> threads2;

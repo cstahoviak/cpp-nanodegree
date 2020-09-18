@@ -2,3 +2,4 @@
 *.out
 *.vscode
 project4_concurrency/build/
+project4_concurrency/Debug/

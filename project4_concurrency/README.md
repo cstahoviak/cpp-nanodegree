@@ -2,16 +2,16 @@
 
 Topics covered:
 
-- __Lesson 1__: Difference between Processes and Threads
+- __Lesson 1__: Difference between __Processes__ and __Threads__
   - write first concurrent program
   - Detailed introduction to the Concurrent Traffic Simulation project
 - __Lesson 2__: Sharing data between threads
-  - C++ _Promises_ and _Futures_
+  - C++ __Promises__ and __Futures__
   - Difference between threads and tasks
-  - Strategies to avoid _data races_ - a major source of errors in concurrent programming
+  - Strategies to avoid __data races__ - a major source of errors in concurrent programming
 - __Lesson 3__: Safely share data between threads (without creating data races)
-  - C++ _mutexes and locks_ - among the most important concepts of the C++ Nanaodegree course
-- __Lesson 4__: _Condition variables_ - expanding on mutexes and locks
+  - C++ __mutexes__ and __locks__ - among the most important concepts of the C++ Nanaodegree course
+- __Lesson 4__: __Condition variables__ - expanding on mutexes and locks
   - Develop a mechanism for safe concurrent data exchange between threads using a _message queue concept_
 - __Project__: Concurrent Traffic Simulation
   - Use concurrency to add traffic lights to the simulation
@@ -74,12 +74,3 @@ Similar to processes, threads exist in different states, which are illustrated i
 - __Creating a process is fairly resource-intensive. It is generally more efficient to use multiple threads within a process.__
 - __In contrast to a process, threads are characterizes as lightweight - they are signifucantly easier to create and destroy.__
 - __Inter-thread communication can be faster than inter-process communication.__
-
-
-## Lesson 1.3: Running a Single Thread
-
-## Lesson 1.4: Starting a Thread with Function Objects
-
-## Lesson 1.5: Starting a Thread with Veriadic Templates and Member Functions
-
-## Lesson 1.6: Running Multiple Threads

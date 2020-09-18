@@ -8,7 +8,8 @@ using Duration = std::chrono::milliseconds;
 void printMessage(std::string message)
 {
   std::this_thread::sleep_for(Duration(10)); // simulate work
-  std::cout << "Thread 1: " << message << std::endl;
+  std::cout << "Thread " << std::this_thread::get_id() << ": " << message <<
+    std::endl;
 }
 
 void modifyMessage(std::promise<std::string> &&prms, std::string message)
@@ -50,15 +51,23 @@ int main() {
   * 2. We can use a Lambda to capture arguments by value or by reference
   * 
   * In both cases, information flows from the parent thread (main) to the worker
-  * threads (t1 and t2). In this section, we will to look at a way to pass data in
+  * threads (t1 and t2). In this section, we will look at a way to pass data in
   * the opposite direction - that is from the worker threads back to the parent
   * thread.
   * 
-  * In order to achieve this, the threads need to adhere to a strict synchronization
-  * protocol. This mechanism acts as a single-use channel between the threads. The
-  * sending end of the channel is called "promise" while the receiving end is
-  * called "future".
-  */ 
+  * In order to achieve this, the threads need to adhere to a strict
+  * synchronization protocol - this mechanism acts as a single-use channel
+  * between the threads. The sending end of the channel is called "promise"
+  * while the receiving end is called "future".
+  * 
+  * The following two examples illustrate the two methods descitbed above. The
+  * output shown below is possible due to the randomness of thread execution:
+  * 
+  * Example 1: Starting threads with Variadic Templates and Lambdas
+  * Thread Thread 140097871222528: 140097879615232My Message: My Message 
+  */
+  std::cout << "Example 1: Starting threads with Variadic Templates and Lambdas"
+    << std::endl;
 
   // define message
   std::string message = "My Message";
@@ -69,7 +78,8 @@ int main() {
   // start thread using a Lambda
   std::thread t2([message] {
       std::this_thread::sleep_for(Duration(10)); // simulate work
-      std::cout << "Thread 2: " << message << std::endl;
+      std::cout << "Thread " << std::this_thread::get_id() << ": " << message <<
+        std::endl;
   });
 
   // thread barrier
@@ -78,35 +88,36 @@ int main() {
 
   /* PROMISE AND FUTURE:
 
-  * In the C++ standard, the class template std::promise provides a convenient way
-  * to store a value or an exception that will acquired asynchronously at a later
-  * time via a std::future object. Each std::promise object is meant to be used only
-  * a single time.
+  * In the C++ standard, the class template std::promise provides a convenient
+  * way to store a value or an exception that will acquired asynchronously at a
+  * later time via a std::future object. Each std::promise object is meant to be
+  * used only a single time.
   * 
   * In the following example, we want to declare a promise which allows for
   * transmitting a string between two threads and modifying it in the process.
   * 
-  * 1. fter defining a message, we have to create a suitable promise that can take
-  * a string object. To obtain the corresponding future, we need to call the method
-  * get_future() on the promise.
+  * 1. After defining a message, we have to create a suitable promise that can
+  * take a string object. To obtain the corresponding future, we need to call
+  * the method get_future() on the promise.
   * 
   * 2. We can now create a thread that takes a function and we will pass it the
-  * promise as an argument as well as the message to be modified. Promises cannot be
-  * copied, because the promise-future concept is a two-point communication channel
-  * for one-time use. Therefore, we must pass the promise to the thread function
-  * using std::move.
+  * promise as an argument as well as the message to be modified. Promises
+  * cannot be copied, because the promise-future concept is a two-point
+  * communication channel for one-time use. Therefore, we must pass the promise
+  * to the thread function using std::move.
   * 
-  * 3. The thread function takes the promise as an rvalue reference in accordance
-  * with move semantics. After waiting for several seconds, the message is modified
-  * and the method set_value() is called on the promise.
+  * 3. The thread function takes the promise as an rvalue reference in
+  * accordance with move semantics. After waiting for several seconds, the
+  * message is modified and the method set_value() is called on the promise.
   * 
-  * std::future::get will block until data is available - which happens as soon as
-  * set_value has been called on the promise (from the thread). If the result is
-  * movable (which is the case for std::string), it will be moved - otherwise it
-  * will be copied instead.
+  * std::future::get will block until data is available - which happens as soon
+  * as set_value has been called on the promise (from the thread). If the result
+  * is movable (which is the case for std::string), it will be moved - otherwise
+  * it will be copied instead.
   * 
   * NOTE: EACH STD::PROMISE OBJECT IS ONLY MEANT TO BE USED A SINGLE TIME
   */
+ std::cout << "\nExample 2: Promises and Futures" << std::endl;
 
   std::string messageToThread = "My Message";
 
@@ -122,7 +133,8 @@ int main() {
 
   // 4. retrieve modified message via future and print to console
   std::string messageFromThread = ftr.get();
-  std::cout << "Modified message from thread(): " << messageFromThread << std::endl;
+  std::cout << "Modified message from worker thread(): " << messageFromThread
+    << std::endl;
 
   // thread barrier
   t.join();
@@ -130,17 +142,18 @@ int main() {
   /* GET() vs. WAIT():
   * 
   * There are some situations where we may want to separate the waiting for the
-  * data from the actual retrieving. Futures allow us to do that using the wait()
-  * function. This method will block until the future is ready. Once it returns, it
-  * is guaranteed that data is available and we can use get() to retrieve it
-  * without delay.
+  * data from the actual retrieving. Futures allow us to do that using the
+  * wait() function. This method will block until the future is ready. Once it
+  * returns, it is guaranteed that data is available and we can use get() to
+  * retrieve it without delay.
   * 
   * In addition to wait, the C++ standard also offers the method wait_for, which
   * takes a time duration as an input and also waits for a result to become
-  * available. The method wait_for() will block either until the specified timeout
-  * duration has elapsed or the result becomes available - whichever comes first.
-  * The return value identifies the state of the result.
+  * available. The method wait_for() will block either until the specified
+  * timeout duration has elapsed or the result becomes available - whichever
+  * comes first. The return value identifies the state of the result.
   */
+  std::cout << "\nExample 3: get(), wait() and wait_for()" << std::endl;
 
   // define input data
   double inputData = 42.0;
@@ -171,10 +184,11 @@ int main() {
   /* PASSING EXCPETIONS FROM WORKER THREAD TO PARENT:
   *
   * The future-promise communication channel may also be used for passing
-  * exceptions. To do this, the worker thread simply sets an exception rather than
-  * a value in the promise. In the parent thread, the exception is then re-thrown
-  * once get() is called on the future.
+  * exceptions. To do this, the worker thread simply sets an exception rather
+  * than a value in the promise. In the parent thread, the exception is then
+  * re-thrown once get() is called on the future.
   */
+  std:: cout << "Example 4: Passing exceptions" << std::endl;
 
   // create promise and future
   std::promise<double> prms3;
@@ -190,7 +204,7 @@ int main() {
     double result = ftr3.get();
     std::cout << "Result = " << result << std::endl;
   }
-  catch (std::runtime_error err)
+  catch (const std::runtime_error& err)
   {
     std::cout << err.what() << std::endl;
   }

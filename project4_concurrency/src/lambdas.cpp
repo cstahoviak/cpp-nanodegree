@@ -47,6 +47,9 @@ int main() {
   // OK, 'id' may be modified - does NOT modify variable in main()
   auto f4 = [id]() mutable { std::cout << "f4()\t ID = " << ++id << std::endl; };
 
+  // OK, ID is passed as a parameter
+  auto f5 = [](const int id) { std::cout << "f5()\t ID = " << id << std::endl; };
+
   // execute lambdas, i.e. call the lambda "closure"
   cout << "main()\t ID = " << id << endl;
   f1();
@@ -54,6 +57,8 @@ int main() {
   f2();
   cout << "main()\t ID = " << id << endl;
   f4();
+  cout << "main()\t ID = " << id << endl;
+  f5(id++);
   cout << "main()\t ID = " << id << endl;
 
   /* OUTPUT:
@@ -64,11 +69,10 @@ int main() {
   * main()	 ID = 1
   * f4()	   ID = 1
   * main()	 ID = 1
+  * f5()	   ID = 1
+  * main()	 ID = 2
   */
 
-  // ID passed as parameter
-  auto f5 = [](const int id) { std::cout << "\nf5()\t ID = " << id << std::endl; };
-  f5(id);
 
   /* NOTE: On the capture list []
   * A Lambda is just an object and, like other objects it may be copied,
