@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++17 -pthread")
 #  Set the project name
 project(concurrency)
 
-# Add include directory
+# Add include directory (include dir doesn't actually exist)
 include_directories(include)
 
 # Locate project dependencies
@@ -22,8 +22,9 @@ link_libraries(Threads::Threads)
 add_executable(threads src/threads.cpp)
 add_executable(lambdas src/lambdas.cpp)
 add_executable(promises_futures src/promises_futures.cpp)
+add_executable(tasks src/tasks.cpp)
 
-# Apply link libraries to specific targets
+# Apply link libraries to specific targets (not needed)
 # target_link_libraries(threads Threads::Threads)
 
 
